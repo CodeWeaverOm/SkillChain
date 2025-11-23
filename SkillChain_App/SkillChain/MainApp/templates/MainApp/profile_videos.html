@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Videos</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+
+<div class="max-w-5xl mx-auto mt-10">
+
+    <div class="flex justify-between mb-6">
+        <h2 class="text-2xl font-bold">Your Uploaded Videos</h2>
+        <a href="{% url 'profile_upload_video' %}" class="px-4 py-2 bg-blue-600 text-white rounded-xl">+ Upload Video</a>
+    </div>
+
+    <div class="grid grid-cols-3 gap-6">
+        {% for v in videos %}
+        <div class="bg-white shadow-md rounded-xl p-4">
+            <video controls class="rounded-lg w-full">
+                <source src="{{ v.video_file.url }}">
+            </video>
+
+            <h3 class="mt-2 font-semibold">{{ v.title }}</h3>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+<form id="uploadVideoForm" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h3 class="text-lg font-semibold mb-2">Upload Video</h3>
+    <label class="block">Title</label>
+    <input type="text" name="title" class="border p-2 w-full mb-2" required>
+    <label class="block">Video file</label>
+    <input type="file" name="video" accept="video/*" class="mb-2" required>
+    <label class="block">Skills (comma separated)</label>
+    <input type="text" name="skills" class="border p-2 w-full mb-4" placeholder="python, django">
+    <div class="flex justify-end">
+        <button type="button" onclick="submitUploadVideo()"
+            class="bg-indigo-600 text-white px-4 py-2 rounded">Upload</button>
+    </div>
+</form>
+
+<script>
+    function submitUploadVideo() {
+        let form = document.getElementById('uploadVideoForm');
+        let data = new FormData(form);
+        fetch("{% url 'profile_upload_video' %}", {
+            method: "POST",
+            headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+            body: data
+        }).then(r => r.json()).then(resp => {
+            if (resp.success) { location.reload(); } else { alert('Upload failed'); }
+        });
+    }
+</script>

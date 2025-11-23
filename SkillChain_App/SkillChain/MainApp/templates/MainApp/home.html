@@ -1,0 +1,219 @@
+{% load dict_extras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillChain | Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- Top Navbar with Dropdown -->
+    <nav class="bg-white shadow-sm px-6 py-4 flex items-center justify-between relative">
+        <div class="flex items-center space-x-2">
+            <img src="{% static 'images/Skill_Chain_App_Logo.png' %}" class="h-12 w-auto rounded-md shadow-sm">
+            <h1 class="text-xl font-semibold">SkillChain</h1>
+        </div>
+
+        <!-- Dropdown Button -->
+        <div x-data="{ open: false }" class="relative inline-block">
+            <button @click="open = !open" class="px-4 py-2 bg-green-500 text-white rounded-lg">
+                Menu ▼
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div x-show="open" @click.away="open = false" x-transition
+                class="absolute right-0 mt-2 w-40 bg-white shadow-lg rounded-xl py-2 z-50">
+                <a href="/profile/" class="block px-4 py-2 hover:bg-gray-100">👤 Profile</a>
+                <a href="/competitions/" class="block px-4 py-2 hover:bg-gray-100">🏆 Competitions</a>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <div class="flex mt-4" x-data="{ activeTab: 'suggestions' }">
+
+        <!-- LEFT SIDEBAR -->
+        <div class="w-1/4 px-6">
+
+            <!-- Profile Card -->
+            <div class="bg-white shadow p-6 rounded-xl text-center">
+                <img src="{{ profile.image.url }}" class="w-28 h-28 mx-auto rounded-full object-cover">
+                <h2 class="text-xl font-semibold mt-2">{{ user.username }}</h2>
+                <div class="flex justify-center space-x-3 mt-3">
+                    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm">Level</span>
+                    <span class="bg-gray-200 px-3 py-1 rounded-full text-sm"> XP</span>
+                </div>
+            </div>
+
+            <!-- Sidebar Buttons -->
+            <div class="mt-6 space-y-3">
+                <button @click="activeTab='suggestions'" :class="{'bg-green-500 text-white': activeTab==='suggestions'}"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl w-full hover:bg-gray-200 transition">
+                    <img src="{% static 'images/Suggestions.png' %}" class="h-5">
+                    <span>Suggestions</span>
+                </button>
+
+                <button @click="activeTab='competitions'"
+                    :class="{'bg-green-500 text-white': activeTab==='competitions'}"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl w-full hover:bg-gray-200 transition">
+                    <img src="{% static 'images/Expert_Verify.png' %}" class="h-5">
+                    <span>Get Verified by Experts</span>
+                </button>
+
+                <button @click="activeTab='leaderboard'" :class="{'bg-green-500 text-white': activeTab==='leaderboard'}"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl w-full hover:bg-gray-200 transition">
+                    <img src="{% static 'images/Competition.png' %}" class="h-5">
+                    <span>Leaderboard</span>
+                </button>
+
+                <button @click="activeTab='peers'" :class="{'bg-green-500 text-white': activeTab==='peers'}"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-xl w-full hover:bg-gray-200 transition">
+                    <img src="{% static 'images/Peers.png' %}" class="h-5">
+                    <span>Peer List</span>
+                </button>
+
+                <form action="{% url 'logout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="mt-6 text-center bg-white border px-4 py-3 rounded-xl hover:bg-gray-200 w-full">
+                        Sign Out
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- RIGHT CONTENT -->
+        <div class="w-3/4 px-6">
+
+            <!-- Suggestions Tab -->
+            <div x-show="activeTab==='suggestions'" x-transition.opacity>
+                <h2 class="text-2xl font-semibold mb-4">Video Suggestions</h2>
+                {% if suggested_videos %}
+                <div class="grid grid-cols-2 gap-6">
+                    {% for video in suggested_videos %}
+                    <div class="bg-white shadow rounded-xl p-4">
+                        <video controls class="w-full h-40 bg-black rounded-xl">
+                            <source src="{{ video.video_file.url }}" type="video/mp4">
+                        </video>
+                        <h3 class="font-semibold mt-3">{{ video.title }}</h3>
+                        <p class="text-sm text-gray-500 mb-2">
+                            {% for s in video.skills.all %}
+                            <span class="bg-gray-200 px-2 rounded">{{ s.name }}</span>
+                            {% endfor %}
+                        </p>
+                        <div class="flex items-center space-x-2">
+                            <img src="{{ video.uploader.image.url }}" class="w-10 h-10 rounded-full cursor-pointer"
+                                onclick="window.location.href='{% url 'view_user_profile' video.uploader.id %}'">
+                            <span class="text-sm text-gray-700 cursor-pointer">{{ video.uploader.user.username }}</span>
+                        </div>
+
+                        <!-- STAR RATING -->
+                        <div class="mt-3 flex space-x-1">
+                            {% for star in "12345" %}
+                            {% if user_ratings|key:video.id >= star|add:"0" %}
+                            <button class="rate-btn text-yellow-500 text-xl" data-video="{{ video.id }}"
+                                data-star="{{ star }}">★</button>
+                            {% else %}
+                            <button class="rate-btn text-gray-400 text-xl" data-video="{{ video.id }}"
+                                data-star="{{ star }}">☆</button>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="bg-white shadow rounded-xl p-10 text-center text-gray-500">
+                    No videos available yet. Check back later!
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Competitions Tab -->
+            <div x-show="activeTab==='competitions'" x-transition.opacity>
+                <h2 class="text-2xl font-semibold mb-4">Competitions by Experts</h2>
+                {% if expert_competitions %}
+                <div class="grid grid-cols-2 gap-6">
+                    {% for comp in expert_competitions %}
+                    <div class="bg-white shadow rounded-xl p-4 hover:shadow-lg transition">
+                        <h3 class="text-lg font-bold text-gray-800">{{ comp.title }}</h3>
+                        <p class="text-gray-600 mt-1">Skill: {{ comp.skill.name }}</p>
+                        <p class="text-gray-500 text-sm mt-2">Ends: {{ comp.end_time }}</p>
+                        <button class="mt-3 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                            onclick="window.location.href='{% url 'competition_detail' comp.id %}'">Participate</button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="bg-white shadow rounded-xl p-10 text-center text-gray-500">
+                    No competitions available yet.
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Leaderboard Tab -->
+            <div x-show="activeTab==='leaderboard'" x-transition.opacity>
+                <h2 class="text-2xl font-semibold mb-4">Leaderboard</h2>
+                {% if leaderboard %}
+                <div class="bg-white shadow rounded-xl p-4">
+                    {% for user in leaderboard %}
+                    <p>{{ user.username }} - {{ user.total_exp }} XP</p>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="bg-white shadow rounded-xl p-10 text-center text-gray-500">
+                    No leaderboard data yet.
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Peer List Tab -->
+            <div x-show="activeTab==='peers'" x-transition.opacity>
+                <h2 class="text-2xl font-semibold mb-4">Peer List</h2>
+                {% if peers %}
+                <div class="bg-white shadow rounded-xl p-4">
+                    {% for peer in peers %}
+                    <p>{{ peer.username }}</p>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="bg-white shadow rounded-xl p-10 text-center text-gray-500">
+                    No peers found.
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Star rating script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".rate-btn").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    let videoId = this.dataset.video;
+                    let stars = this.dataset.star;
+                    fetch(`/rate_video/${videoId}/`, {
+                        method: "POST",
+                        headers: { "X-CSRFToken": "{{ csrf_token }}" },
+                        body: new URLSearchParams({ "stars": stars })
+                    })
+                        .then(r => r.json())
+                        .then(data => { if (data.success) location.reload(); });
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

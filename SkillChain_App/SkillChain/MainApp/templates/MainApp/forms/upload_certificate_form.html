@@ -1,0 +1,26 @@
+<form id="uploadCertForm" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h3 class="text-lg font-semibold mb-2">Upload Certificate</h3>
+    <label class="block">Title</label>
+    <input type="text" name="title" class="border p-2 w-full mb-2" required>
+    <label class="block">Certificate file (PDF / image)</label>
+    <input type="file" name="certificate" accept=".pdf,image/*" class="mb-2" required>
+    <div class="flex justify-end">
+        <button type="button" onclick="submitUploadCert()"
+            class="bg-indigo-600 text-white px-4 py-2 rounded">Upload</button>
+    </div>
+</form>
+
+<script>
+    function submitUploadCert() {
+        let form = document.getElementById('uploadCertForm');
+        let data = new FormData(form);
+        fetch("{% url 'profile_upload_certificate' %}", {
+            method: "POST",
+            headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+            body: data
+        }).then(r => r.json()).then(resp => {
+            if (resp.success) { location.reload(); } else { alert('Upload failed'); }
+        });
+    }
+</script>

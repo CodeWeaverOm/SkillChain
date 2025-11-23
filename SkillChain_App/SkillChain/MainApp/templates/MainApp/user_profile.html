@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ profile.user.username }} - Profile</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- AJAX (Optional but required for tab switching) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</head>
+<body class="bg-gray-100">
+
+    <div class="max-w-4xl mx-auto mt-10 bg-white p-6 rounded-xl shadow">
+
+        <!-- Profile Header -->
+        <div class="flex items-center space-x-4">
+            <img src="{{ profile.image.url }}" class="w-20 h-20 rounded-full border">
+
+            <div>
+                <h2 class="text-2xl font-bold">{{ profile.user.username }}</h2>
+                <p class="text-gray-600">{{ profile.bio }}</p>
+
+                <!-- XP + Level -->
+                <p class="mt-1 text-sm text-gray-700">
+                    <b>XP:</b> {{ profile.xp }} |
+                    <b>Level:</b> {{ profile.level }}
+                </p>
+
+                <!-- Add Peer Button -->
+                {% if not is_owner %}
+                    <a href="{% url 'add_peer' profile.id %}"
+                       class="px-4 py-2 bg-blue-600 text-white rounded-lg inline-block mt-2 hover:bg-blue-700">
+                        ➕ Add Peer
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <hr class="my-4">
+
+        <!-- Tabs -->
+        <div class="flex space-x-4 border-b pb-2">
+            <button class="tab-btn text-blue-600 font-semibold"
+                    data-tab="profile">
+                Profile
+            </button>
+
+            <button class="tab-btn"
+                    data-tab="videos">
+                Videos
+            </button>
+
+            <button class="tab-btn"
+                    data-tab="certificates">
+                Certificates
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="tab-content" class="mt-4">
+            <!-- Default load profile tab -->
+            {% include 'MainApp/profile_tabs/profile_tab.html' with profile=profile educations=education_list experiences=experience_list %}
+        </div>
+
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+            // clicking tab button
+            $(".tab-btn").click(function () {
+                let tab = $(this).data("tab");
+
+                $(".tab-btn").removeClass("text-blue-600 font-semibold");
+                $(this).addClass("text-blue-600 font-semibold");
+
+                $.ajax({
+                    url: "/user/{{ profile.id }}/load-tab/" + tab + "/",
+                    success: function (data) {
+                        $("#tab-content").html(data);
+                    },
+                    error: function () {
+                        $("#tab-content").html("<p class='text-red-500'>Error loading tab.</p>");
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>

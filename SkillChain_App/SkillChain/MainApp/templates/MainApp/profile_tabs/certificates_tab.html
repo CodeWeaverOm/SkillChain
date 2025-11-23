@@ -1,0 +1,17 @@
+<div class="flex justify-between items-center">
+    <h3 class="text-xl font-semibold">Certificates</h3>
+    <button onclick="openModal('/profile/upload-certificate/')" class="bg-indigo-600 text-white px-4 py-1 rounded-lg">+
+        Add Certificate</button>
+</div>
+
+<div class="space-y-4 mt-4">
+    {% for c in certificates %}
+    <div class="bg-white shadow p-4 rounded-xl">
+        <h4 class="font-semibold">{{ c.title }}</h4>
+        <p class="text-gray-600 text-sm">({{ c.date }})</p>
+        <a href="{{ c.certificate_file.url }}" class="text-indigo-600 mt-2 block">View Certificate</a>
+    </div>
+    {% empty %}
+    <p class="text-gray-500 mt-3">No certificates uploaded.</p>
+    {% endfor %}
+</div>

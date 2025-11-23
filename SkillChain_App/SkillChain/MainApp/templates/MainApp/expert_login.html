@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expert Login | SkillChain</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f1f5f9;
+            font-family: "Inter", sans-serif;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0px 8px 25px rgba(99, 102, 241, 0.15);
+            text-align: center;
+            width: 380px;
+        }
+
+        .login-container h2 {
+            color: #6366f1;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-field:focus {
+            border-color: #14b8a6;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #6366f1, #14b8a6);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.03);
+        }
+
+        .footer {
+            margin-top: 15px;
+            color: #0f172a;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #f59e0b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-msg {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <img src="{% static 'images/Skill_Chain_App_Logo.png' %}" class="logo">
+
+        <h2>Expert Login</h2>
+
+        {% if messages %}
+            {% for m in messages %}
+                <p class="error-msg">{{ m }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Expert Username" class="input-field" required>
+            <input type="password" name="password" placeholder="Password" class="input-field" required>
+            <button type="submit" class="btn">Login as Expert</button>
+        </form>
+
+        <div class="footer">
+            <p>
+                Want to login as normal user?
+                <a href="{% url 'login' %}">User Login</a>
+            </p>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

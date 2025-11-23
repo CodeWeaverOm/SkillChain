@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create Competition | Expert Panel</title>
+    <style>
+        body {
+            background: #f1f5f9;
+            font-family: Arial, sans-serif;
+            padding: 40px;
+        }
+
+        .box {
+            max-width: 500px;
+            background: white;
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background: #14b8a6;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #0d9488;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <h2>Create New Competition</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <label>Title</label>
+            <input type="text" name="title" required>
+
+            <label>Description</label>
+            <textarea name="description" rows="4" required></textarea>
+
+            <label>Start Date</label>
+            <input type="datetime-local" name="start_date" required>
+
+            <label>End Date</label>
+            <input type="datetime-local" name="end_date" required>
+
+            <label>Image</label>
+            <input type="file" name="image" accept="image/*" required>
+
+            <label>Skills</label>
+            <select name="skills" multiple required>
+                {% for s in skills %}
+                <option value="{{ s.id }}">{{ s.name }}</option>
+                {% endfor %}
+            </select>
+
+
+            <button type="submit">Create Competition</button>
+        </form>
+    </div>
+
+</body>
+
+</html>

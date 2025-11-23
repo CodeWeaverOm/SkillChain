@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillChail | Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* === General Page Setup === */
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f1f5f9;
+            font-family: "Inter", sans-serif;
+        }
+
+        .logo {
+            width: 120px;
+            /* Adjust size */
+            height: 120px;
+            /* Same as width to make it a circle */
+            border-radius: 50%;
+            /* Makes the image round */
+            object-fit: cover;
+            /* Makes image fit inside circle */
+            margin-bottom: 20px;
+        }
+
+        /* === Centered Login Box === */
+        .login-container {
+            background: white;
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0px 8px 25px rgba(99, 102, 241, 0.15);
+            text-align: center;
+            width: 380px;
+        }
+
+        .login-container h2 {
+            color: #6366f1;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        /* === Input Fields === */
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-field:focus {
+            border-color: #14b8a6;
+        }
+
+        /* === Login Button === */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #6366f1, #14b8a6);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.03);
+        }
+
+        /* === Footer Text === */
+        .footer {
+            margin-top: 15px;
+            color: #0f172a;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #f59e0b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <img src="{% static 'images/Skill_Chain_App_Logo.png' %}" class="logo">
+        <h2>SkillChail Login</h2>
+        <p>Sign in to your SkillChain account</p>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username" class="input-field" required>
+            <input type="password" name="password" placeholder="Password" class="input-field" required>
+            <button type="submit" class="btn">Login</button>
+        </form>
+        <div class="footer">
+            <p class="text-center mt-4 text-sm text-gray-600">
+                Don't have an account?
+                <a href="{% url 'signup' %}" class="text-blue-500">Sign up</a>
+            </p>
+
+            <!-- Add this new expert login link -->
+            <p class="text-center mt-2 text-sm text-gray-600">
+                Are you an expert?
+                <a href="{% url 'expert_login' %}" class="text-green-600 font-semibold">Login as Expert</a>
+            </p>
+
+        </div>
+    </div>
+</body>
+
+</html>

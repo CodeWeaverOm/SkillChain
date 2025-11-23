@@ -1,0 +1,32 @@
+<div class="space-y-6">
+    <div class="bg-white rounded-xl shadow p-5">
+        <div class="flex justify-between">
+            <h3 class="text-xl font-semibold">Summary</h3>
+            <button onclick="openModal('/profile/edit/')" class="text-indigo-600">Edit</button>
+        </div>
+        <p class="text-gray-600 mt-2">{{ profile.summary|default:"No summary available" }}</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-5">
+        <h3 class="text-xl font-semibold">Education</h3>
+        {% for e in educations %}
+        <p class="mt-2"><strong>{{ e.degree }}</strong> — {{ e.institute }} ({{ e.year }})</p>
+        {% empty %}
+        <p class="text-gray-500">No education records</p>
+        {% endfor %}
+        <div class="mt-3">
+            <button class="bg-indigo-600 text-white px-4 py-1 rounded"
+                onclick="openModal('/profile/upload-certificate/')">+ Add Certificate</button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow p-5">
+        <h3 class="text-xl font-semibold">Experience</h3>
+        {% for x in experiences %}
+        <p class="mt-2"><strong>{{ x.role }}</strong> at {{ x.company }} ({{ x.duration }})</p>
+        <p class="text-gray-600">{{ x.description }}</p>
+        {% empty %}
+        <p class="text-gray-500">No experience records</p>
+        {% endfor %}
+    </div>
+</div>

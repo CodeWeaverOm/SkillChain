@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Competitions For You</title>
+    <style>
+        body { background:#f1f5f9; font-family:Inter; padding:20px; }
+        .comp {
+            background:white;
+            padding:18px;
+            border-radius:12px;
+            margin-bottom:15px;
+            box-shadow:0 5px 15px rgba(0,0,0,0.07);
+        }
+        .btn {
+            background:#14b8a6;
+            color:white;
+            padding:10px 16px;
+            text-decoration:none;
+            border-radius:8px;
+            font-weight:600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Competitions For You</h1>
+
+    {% for c in competitions %}
+    <div class="comp">
+        <h2>{{ c.title }}</h2>
+        <p><strong>Skill:</strong> {{ c.skill.name }}</p>
+        <p><strong>Ends:</strong> {{ c.end_time }}</p>
+        <a class="btn" href="{% url 'participate_competition' c.id %}">Participate</a>
+    </div>
+    {% empty %}
+    <p>No competitions available.</p>
+    {% endfor %}
+
+</body>
+</html>

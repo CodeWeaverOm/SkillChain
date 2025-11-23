@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>{{ profile.user.username }} | Profile</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .tab-active {
+            border-bottom: 3px solid #4F46E5;
+            color: #4F46E5;
+            font-weight: 600
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- NAV (same as home) -->
+    <nav class="bg-white shadow px-6 py-3 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <img src="{% static 'images/Skill_Chain_App_Logo.png' %}" class="h-12 w-auto rounded-md shadow-sm">
+
+            <h1 class="text-xl font-bold text-indigo-600">SkillChain</h1>
+        </div>
+
+        <div class="relative group">
+            <img src="{{ profile.image.url }}" class="w-10 h-10 rounded-full cursor-pointer">
+
+            <!-- YOUR DROPDOWN -->
+            <div class="absolute right-0 mt-2 w-44 bg-white shadow-lg rounded-xl 
+                opacity-0 group-hover:opacity-100 transition-all p-2 z-50">
+
+                <!-- HOME -->
+                <a href="{% url 'home' %}"
+                    class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                    <img src="{% static 'images/Home.png' %}" class="h-5 w-5 object-contain">
+                    <span class="text-gray-700 text-sm font-medium">Home</span>
+                </a>
+
+                <!-- LOGOUT -->
+                <a href="{% url 'logout' %}"
+                    class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 transition">
+                    <img src="{% static 'images/Logou.png' %}" class="h-5 w-5 object-contain">
+                    <span class="text-red-500 text-sm font-medium">Logout</span>
+                </a>
+
+            </div>
+        </div>
+
+
+
+    </nav>
+
+    <div class="max-w-7xl mx-auto mt-10 grid grid-cols-12 gap-6">
+
+        <!-- LEFT -->
+        <div class="col-span-4 bg-white rounded-xl shadow p-6 text-center">
+            <img src="{{ profile.image.url }}" class="w-28 h-28 mx-auto rounded-full object-cover">
+            <h2 class="text-2xl font-semibold mt-4">{{ profile.user.username }}</h2>
+            <p class="text-gray-500 text-sm">{{ profile.tagline|default:"No tagline set" }}</p>
+
+            <hr class="my-4">
+
+            <div class="text-left space-y-2">
+                <p><strong>Level:</strong> {{ profile.level }}</p>
+                <p><strong>XP:</strong> {{ profile.xp }}</p>
+                <p><strong>Status:</strong> {{ profile.status }}</p>
+
+                <hr class="my-3">
+
+                <p><strong>LinkedIn:</strong>
+                    {% if profile.linkedin %}
+                    <a href="{{ profile.linkedin }}" class="text-indigo-600" target="_blank">
+                        {{ profile.linkedin }}
+                    </a>
+                    {% else %}
+                    —
+                    {% endif %}
+                </p>
+
+                <p><strong>GitHub:</strong>
+                    {% if profile.github %}
+                    <a href="{{ profile.github }}" class="text-indigo-600" target="_blank">
+                        {{ profile.github }}
+                    </a>
+                    {% else %}
+                    —
+                    {% endif %}
+                </p>
+
+                <p><strong>Website:</strong>
+                    {% if profile.website %}
+                    <a href="{{ profile.website }}" class="text-indigo-600" target="_blank">
+                        {{ profile.website }}
+                    </a>
+                    {% else %}
+                    —
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="col-span-8">
+
+            <!-- Tabs header -->
+            <div class="bg-white shadow rounded-xl px-4 py-2 flex space-x-6">
+                <button class="tab-btn tab-active" data-tab="profile">Profile</button>
+                <button class="tab-btn" data-tab="videos">Videos</button>
+                <button class="tab-btn" data-tab="certificates">Certificates</button>
+            </div>
+
+            <!-- Tab content -->
+            <div id="tabContent" class="mt-5">
+                {% include 'MainApp/profile_tabs/profile_tab.html' %}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-xl shadow-lg w-96 relative">
+            <button onclick="closeModal()" class="absolute top-3 right-4 text-red-500 font-bold">X</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            $(".tab-btn").click(function () {
+                $(".tab-btn").removeClass("tab-active");
+                $(this).addClass("tab-active");
+                let tab = $(this).data("tab");
+                $.get("/profile/tab/" + tab + "/", function (data) {
+                    $("#tabContent").html(data);
+                });
+            });
+        });
+
+        function openModal(url) {
+            $.get(url, function (data) {
+                $("#modalContent").html(data);
+                $("#modal").removeClass("hidden");
+            });
+        }
+        function closeModal() {
+            $("#modal").addClass("hidden");
+        }
+    </script>
+
+</body>
+
+</html>

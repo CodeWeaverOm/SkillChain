@@ -1,0 +1,41 @@
+<form id="editProfileForm" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h3 class="text-lg font-semibold mb-2">Edit Profile</h3>
+
+    <label>Profile picture</label>
+    <input type="file" name="image" class="mb-2">
+
+    <label>Tagline</label>
+    <input type="text" name="tagline" value="{{ profile.tagline }}" class="border p-2 w-full mb-2">
+
+    <label>Summary</label>
+    <textarea name="summary" class="border p-2 w-full mb-2" rows="4">{{ profile.summary }}</textarea>
+
+    <label>LinkedIn</label>
+    <input type="text" name="linkedin" value="{{ profile.linkedin }}" class="border p-2 w-full mb-2">
+
+    <label>GitHub</label>
+    <input type="text" name="github" value="{{ profile.github }}" class="border p-2 w-full mb-2">
+
+    <label>Website</label>
+    <input type="text" name="website" value="{{ profile.website }}" class="border p-2 w-full mb-4">
+
+    <div class="flex justify-end">
+        <button type="button" onclick="submitEditProfile()"
+            class="bg-indigo-600 text-white px-4 py-2 rounded">Save</button>
+    </div>
+</form>
+
+<script>
+    function submitEditProfile() {
+        let form = document.getElementById('editProfileForm');
+        let data = new FormData(form);
+        fetch("{% url 'edit_profile' %}", {
+            method: "POST",
+            headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+            body: data
+        }).then(r => r.json()).then(resp => {
+            if (resp.success) { location.reload(); } else { alert('Save failed'); }
+        });
+    }
+</script>
